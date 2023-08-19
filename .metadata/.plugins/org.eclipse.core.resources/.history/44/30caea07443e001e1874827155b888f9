@@ -1,0 +1,61 @@
+import java.util.Random;
+import java.util.Scanner;
+
+public class DriverProgram {
+    private Comprador compradorActual;
+    private Localidad localidad1;
+    private Localidad localidad5;
+    private Localidad localidad10;
+    private Random random;
+
+    public DriverProgram() {
+        compradorActual = null;
+        localidad1 = new Localidad(20);
+        localidad5 = new Localidad(20);
+        localidad10 = new Localidad(20);
+        random = new Random();
+    }
+
+    public void mostrarMenu() {
+    	Scanner scanner = new Scanner(System.in);
+        int opcion;
+
+        do {
+        	System.out.println("========= Compra tu entrada =======");
+            System.out.println("1. Solicitar Compra");
+            System.out.println("2. Compra Especial");
+            System.out.println("3. Mostrar Información");
+            System.out.println("4. Salir");
+            System.out.print("Ingrese la opción que desea: ");
+            opcion = scanner.nextInt();
+
+            switch (opcion) {
+                case 1:
+                    solicitarCompra(scanner);
+                    break;
+                case 2:
+                    compraEspecial(scanner);
+                    break;
+                case 3:
+                    mostrarInformacion();
+                    break;
+                case 4:
+                    System.out.println("¡Hasta luego!");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Intente nuevamente.");
+            }
+        } while (opcion != 4);
+    }
+
+    private boolean esFibonacci(int numero) {
+        // ... (función de validación para códigos especiales Fibonacci)
+    }
+
+    public static void main(String[] args) {
+        DriverProgram driver = new DriverProgram();
+        driver.mostrarMenu();
+    }
+}
+
+

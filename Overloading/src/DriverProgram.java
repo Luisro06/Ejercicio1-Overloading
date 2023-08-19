@@ -1,0 +1,256 @@
+import java.util.Random;
+import java.util.Scanner;
+
+//Documentado con ChatGPT
+/**
+ * Clase principal que simula la compra de boletos para un evento.
+ */
+public class DriverProgram {
+    private Comprador compradorActual;
+    private Localidad localidad1;
+    private Localidad localidad5;
+    private Localidad localidad10;
+    private Random random;
+
+    /**
+     * Constructor que inicializa las instancias de Comprador, Localidad y Random.
+     */
+    public DriverProgram() {
+        compradorActual = null;
+        localidad1 = new Localidad(20);
+        localidad5 = new Localidad(20);
+        localidad10 = new Localidad(20);
+        random = new Random();
+    }
+
+    /**
+     * Muestra el menú de opciones y permite al usuario interactuar con el programa.
+     */
+    public void mostrarMenu() {
+        Scanner scanner = new Scanner(System.in);
+        int opcion;
+
+        do {
+            System.out.println("-------- Inicio --------");
+            System.out.println("1. Nuevo Comprador.");
+            System.out.println("2. Nueva Solicitud de Boletos.");
+            System.out.println("3. Consultar Disponibilidad Total.");
+            System.out.println("4. Consultar Disponibilidad Individual.");
+            System.out.println("5. Reporte de Caja.");
+            System.out.println("6. Código Especial.");
+            System.out.println("7. Salir.");
+            System.out.print("Seleccione la opción que deseas: ");
+            opcion = scanner.nextInt();
+            System.out.println("-------------------------");
+
+            switch (opcion) {
+                case 1:
+                    nuevoComprador(scanner);
+                    break;
+                case 2:
+                    nuevaSolicitudBoletos(scanner);
+                    break;
+                case 3:
+                    consultarDisponibilidadTotal();
+                    break;
+                case 4:
+                    consultarDisponibilidadIndividual(scanner);
+                    break;
+                case 5:
+                    reporteCaja();
+                    break;
+                case 6:
+                    codigoEspecial(scanner);
+                    break;
+                case 7:
+                    System.out.println("¡Nos vemos 😎!");
+                    break;
+                default:
+                    System.out.println("No contamos con esta opción 😔. Intente nuevamente.");
+            }
+        } while (opcion != 7);
+    }
+
+    /**
+     * Registra un nuevo comprador en el sistema.
+     *
+     * @param scanner Objeto Scanner para capturar la entrada del usuario.
+     */
+    private void nuevoComprador(Scanner scanner) {
+        scanner.nextLine();
+
+        System.out.print("¡Muy bien! Ingrese el nombre del nuevo comprador: ");
+        String nombre = scanner.nextLine();
+        System.out.print("Ahora, el email del nuevo comprador: ");
+        String email = scanner.nextLine();
+
+        compradorActual = new Comprador(nombre, email);
+        System.out.println("El nuevo comprador se ha registrado exitosamente 😎.");
+    }
+
+    // Resto del código (métodos nuevaSolicitudBoletos, procesarSolicitud, asignarLocalidadAleatoria, consultarDisponibilidadTotal, consultarDisponibilidadIndividual, reporteCaja, codigoEspecial, esFibonacci, y el método main)...
+
+
+    private void nuevaSolicitudBoletos(Scanner scanner) {
+        if (compradorActual == null) {
+            System.out.println("No hay comprador registrado. Debes registrar un comprador antes.");
+            return;
+        }
+
+        System.out.print("Ingrese la cantidad de boletos a comprar: ");
+        int cantidadBoletos = scanner.nextInt();
+        System.out.print("Ingrese el presupuesto máximo: ");
+        int presupuestoMaximo = scanner.nextInt();
+
+        TicketPurchaseRequest solicitud = new TicketPurchaseRequest(compradorActual.getNombre(), compradorActual.getEmail(), cantidadBoletos, presupuestoMaximo);
+        procesarSolicitud(solicitud);
+    }
+
+    private void procesarSolicitud(TicketPurchaseRequest solicitud) {
+        int ticket = random.nextInt(15000) + 1;
+        int a = random.nextInt(15000) + 1;
+        int b = random.nextInt(15000) + 1;
+
+        boolean aptoCompra = (ticket >= Math.min(a, b)) && (ticket <= Math.max(a, b));
+        int localidadAsignada = -1;
+        int precio = 0;
+
+        if (aptoCompra) {
+            if (solicitud.getPresupuestoMaximo() >= 1000) {
+                precio = 1000;
+                localidadAsignada = asignarLocalidadAleatoria();
+            } else if (solicitud.getPresupuestoMaximo() >= 500) {
+                precio = 500;
+                localidadAsignada = asignarLocalidadAleatoria();
+            } else {
+                precio = 100;
+                localidadAsignada = asignarLocalidadAleatoria();
+            }
+
+            if (localidadAsignada != -1) {
+                Ticket nuevoTicket = new Ticket(ticket, true, localidadAsignada, precio);
+
+                if (localidadAsignada == 1) {
+                    localidad1.agregarVenta(solicitud.getCantidadBoletos());
+                } else if (localidadAsignada == 5) {
+                    localidad5.agregarVenta(solicitud.getCantidadBoletos());
+                } else if (localidadAsignada == 10) {
+                    localidad10.agregarVenta(solicitud.getCantidadBoletos());
+                }
+
+                compradorActual.agregarCompra(solicitud.getCantidadBoletos(), precio);
+                System.out.println("Compra exitosa. Se vendieron " + solicitud.getCantidadBoletos() + " boletos a $" + precio + " cada uno en la Localidad " + localidadAsignada + ".");
+            }
+        } else {
+            System.out.println("El ticket no es apto para compra.");
+        }
+    }
+
+    private int asignarLocalidadAleatoria() {
+        int[] localidadesDisponibles = {1, 5, 10};
+        return localidadesDisponibles[random.nextInt(localidadesDisponibles.length)];
+    }
+
+    private void consultarDisponibilidadTotal() {
+        int boletosVendidosLocalidad1 = localidad1.getBoletosVendidos();
+        int boletosVendidosLocalidad5 = localidad5.getBoletosVendidos();
+        int boletosVendidosLocalidad10 = localidad10.getBoletosVendidos();
+
+        int boletosDisponiblesLocalidad1 = localidad1.getCapacidad() - boletosVendidosLocalidad1;
+        int boletosDisponiblesLocalidad5 = localidad5.getCapacidad() - boletosVendidosLocalidad5;
+        int boletosDisponiblesLocalidad10 = localidad10.getCapacidad() - boletosVendidosLocalidad10;
+
+        System.out.println("Disponibilidad total de boletos:");
+        System.out.println("Localidad 1 - Vendidos: " + boletosVendidosLocalidad1 + ", Disponibles: " + boletosDisponiblesLocalidad1);
+        System.out.println("Localidad 5 - Vendidos: " + boletosVendidosLocalidad5 + ", Disponibles: " + boletosDisponiblesLocalidad5);
+        System.out.println("Localidad 10 - Vendidos: " + boletosVendidosLocalidad10 + ", Disponibles: " + boletosDisponiblesLocalidad10);
+    }
+
+
+    private void consultarDisponibilidadIndividual(Scanner scanner) {
+        System.out.println("Seleccione la localidad para consultar la disponibilidad:");
+        System.out.println("1. Localidad 1");
+        System.out.println("2. Localidad 5");
+        System.out.println("3. Localidad 10");
+        System.out.print("Ingrese el número de la opción: ");
+        int opcion = scanner.nextInt();
+
+        Localidad localidadSeleccionada = null;
+
+        switch (opcion) {
+            case 1:
+                localidadSeleccionada = localidad1;
+                break;
+            case 2:
+                localidadSeleccionada = localidad5;
+                break;
+            case 3:
+                localidadSeleccionada = localidad10;
+                break;
+            default:
+                System.out.println("Opción inválida.");
+                return;
+        }
+
+        if (localidadSeleccionada != null) {
+            int boletosDisponibles = localidadSeleccionada.getCapacidad() - localidadSeleccionada.getBoletosVendidos();
+            System.out.println("Boletos disponibles en la Localidad " + opcion + ": " + boletosDisponibles);
+        }
+    }
+
+
+    private void reporteCaja() {
+        int totalRecaudado = (localidad1.getBoletosVendidos() * 100) + (localidad5.getBoletosVendidos() * 500) + (localidad10.getBoletosVendidos() * 1000);
+        System.out.println("Total recaudado: $" + totalRecaudado);
+    }
+
+    private void codigoEspecial(Scanner scanner) {
+        if (compradorActual == null) {
+            System.out.println("No hay comprador registrado. Registre un nuevo comprador primero.");
+            return;
+        }
+
+        System.out.print("Ingrese el código especial: ");
+        int codigoEspecial = scanner.nextInt();
+
+        if (esFibonacci(codigoEspecial)) {
+            if (codigoEspecial > 0) {
+                if (localidad10.getCapacidad() - localidad10.getBoletosVendidos() > 0) {
+                    int precioEspecial = 20000;
+                    localidad10.agregarVenta(1);
+                    compradorActual.agregarCompra(1, precioEspecial);
+                    System.out.println("Compra especial exitosa. Se vendió 1 boleto en la Localidad 10 por $" + precioEspecial + ".");
+                } else {
+                    System.out.println("No hay espacio disponible en la Localidad 10 para la compra especial.");
+                }
+            } else {
+                System.out.println("El código especial debe ser un número positivo.");
+            }
+        } else {
+            System.out.println("El código especial no pertenece a la secuencia de Fibonacci.");
+        }
+    }
+
+    private boolean esFibonacci(int numero) {
+        int a = 0;
+        int b = 1;
+        while (b <= numero) {
+            if (b == numero) {
+                return true;
+            }
+            int temp = b;
+            b = a + b;
+            a = temp;
+        }
+        return false;
+    }
+
+
+    public static void main(String[] args) {
+        DriverProgram driver = new DriverProgram();
+        driver.mostrarMenu();
+    }
+}
+
+
+

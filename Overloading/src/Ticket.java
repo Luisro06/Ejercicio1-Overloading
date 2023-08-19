@@ -1,0 +1,32 @@
+
+public class Ticket {
+    private int numero;
+    private boolean aptoCompra;
+    private int localidadAsignada;
+    private int precio;
+
+    public Ticket(int numero, boolean aptoCompra, int localidadAsignada, int precio) {
+        this.numero = numero;
+        this.aptoCompra = aptoCompra;
+        this.localidadAsignada = localidadAsignada;
+        this.precio = precio;
+    }
+
+    public int getNumero() {
+        return numero;
+    }
+
+    public boolean isAptoCompra() {
+        return aptoCompra;
+    }
+
+    public int getLocalidadAsignada() {
+        return localidadAsignada;
+    }
+
+    public int getPrecio() {
+        return precio;
+    }
+}
+
+

@@ -1,0 +1,44 @@
+
+public class Comprador {
+    private String nombre;
+    private String email;
+    private int boletosComprados;
+    private int gastoTotal;
+
+    public Comprador(String nombre, String email) {
+        this.nombre = nombre;
+        this.email = email;
+        this.boletosComprados = 0;
+        this.gastoTotal = 0;
+    }
+
+    public void actualizarDatos(String nombre, String email) {
+        this.nombre = nombre;
+        this.email = email;
+    }
+
+    public void agregarCompra(int cantidadBoletos, int precioUnitario) {
+        if (cantidadBoletos > 0 && precioUnitario > 0) {
+            boletosComprados += cantidadBoletos;
+            gastoTotal += cantidadBoletos * precioUnitario;
+        }
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public int getBoletosComprados() {
+        return boletosComprados;
+    }
+
+    public int getGastoTotal() {
+        return gastoTotal;
+    }
+}
+
+
